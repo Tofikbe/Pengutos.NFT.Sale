@@ -272,6 +272,13 @@
         alert("Transaction failed.");
       }
     }
+    const buyBtn = event.target;
+buyBtn.textContent = "Processing...";
+buyBtn.disabled = true;
+
+// After transaction:
+buyBtn.textContent = "Buy Now";
+buyBtn.disabled = false;
 
     function showOwned() {
       ownedNfts.innerHTML = '';
