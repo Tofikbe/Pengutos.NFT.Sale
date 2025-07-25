@@ -19,6 +19,15 @@
       color: #fff;
     }
 
+    .dark-mode header {
+      background: #111;
+    }
+
+    .dark-mode .nft-card {
+      background: #222;
+      color: white;
+    }
+
     .loader {
       display: inline-block;
       width: 12px;
@@ -41,10 +50,6 @@
       align-items: center;
       padding: 10px 20px;
       background: #fff;
-    }
-
-    .dark-mode header {
-      background: #111;
     }
 
     header h2 {
@@ -99,11 +104,6 @@
       padding: 10px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       text-align: center;
-    }
-
-    .dark-mode .nft-card {
-      background: #222;
-      color: white;
     }
 
     .nft-card img {
@@ -174,7 +174,7 @@
   <div id="settingsPopup" class="popup hidden">
     <input type="email" placeholder="Enter Email" /><br/>
     <input type="text" placeholder="Paste Wallet Address" /><br/>
-    <button onclick="toggleTheme()">Toggle Theme (Dark/Light)</button>
+    <button onclick="toggleDarkMode()">Toggle Theme (Dark/Light)</button>
   </div>
 
   <div id="myNfts" class="popup hidden">
@@ -246,10 +246,6 @@
     function openSection(id) {
       document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("dark-mode");
     }
 
     connectBtn.onclick = async () => {
