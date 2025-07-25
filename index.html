@@ -1,146 +1,137 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
-  <script type="module" src="https://unpkg.com/aptos@1.4.2/dist/index.min.js"></script>
+  <script type="module" src="https://unpkg.com/@aptos-labs/aptos-wallet-adapter-petra"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
       padding: 20px;
-      background: #f9f9f9;
     }
     .wallet {
       margin-bottom: 20px;
     }
-    .nft-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    .nft-container {
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
     }
-    .nft-card {
-      background: white;
-      padding: 15px;
+    .nft {
+      background-color: #222;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      width: 200px;
       text-align: center;
     }
-    .nft-card img {
-      max-width: 100%;
-      border-radius: 8px;
+    .nft img {
+      width: 100%;
+      border-radius: 10px;
     }
-    .button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #5e60ce;
+    button {
+      background-color: #04aaff;
       color: white;
       border: none;
+      padding: 10px;
       border-radius: 5px;
       cursor: pointer;
-    }
-    .button:hover {
-      background-color: #3f42b4;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
+  <h1>Pengutos NFT Store</h1>
   <div class="wallet">
-    <button class="button" id="connectBtn">Connect Wallet</button>
-    <span id="walletAddress"></span>
+    <button id="connectWallet">Connect Petra Wallet</button>
+    <button id="disconnectWallet" style="display:none;">Disconnect</button>
+    <p id="walletAddress"></p>
   </div>
-  <div class="nft-grid" id="nftContainer"></div>  <script>
+
+  <div class="nft-container" id="nftList"></div>
+
+  <script type="module">
+    import { PetraWallet } from "https://unpkg.com/@aptos-labs/aptos-wallet-adapter-petra/dist/index.mjs";
+
+    const wallet = new PetraWallet();
+    let currentAccount = null;
+
+    const connectBtn = document.getElementById("connectWallet");
+    const disconnectBtn = document.getElementById("disconnectWallet");
+    const walletAddressP = document.getElementById("walletAddress");
+    const nftList = document.getElementById("nftList");
+
     const images = [
-      "https://i.imgur.com/xN5mZ8Q.png",
-      "https://i.imgur.com/MrsZFoH.png",
-      "https://i.imgur.com/vusw0O8.png",
-      "https://i.imgur.com/tYYhLRA.png",
-      "https://i.imgur.com/I0J4OBv.png",
-      "https://i.imgur.com/J2ZhD8S.png",
-      "https://i.imgur.com/IxCCTH1.png",
-      "https://i.imgur.com/o04j2c4.png",
-      "https://i.imgur.com/b7vZoVR.png",
-      "https://i.imgur.com/R3Tz3du.png"
+      { name: "Pengutos #1", price: 1, img: "https://i.imgur.com/kT4dDwh.png" },
+      { name: "Pengutos #2", price: 1, img: "https://i.imgur.com/Y4E2bWv.png" },
+      { name: "Pengutos #3", price: 4, img: "https://i.imgur.com/gkduONR.png" },
+      { name: "Pengutos #4", price: 4, img: "https://i.imgur.com/wIPSL7g.png" },
+      { name: "Pengutos #5", price: 20, img: "https://i.imgur.com/9yQfAHg.png" },
+      { name: "Pengutos #6", price: 25, img: "https://i.imgur.com/fzksr6F.png" },
+      { name: "Pengutos #7", price: 30, img: "https://i.imgur.com/W4nxEjV.png" },
+      { name: "Pengutos #8", price: 50, img: "https://i.imgur.com/ivHkECL.png" },
+      { name: "Pengutos #9", price: 1000, img: "https://i.imgur.com/yCq4WnL.png" },
+      { name: "Pengutos #10", price: 1000, img: "https://i.imgur.com/XrN1y7m.png" },
     ];
 
-    const names = [
-      "Pengutos #1",
-      "Pengutos #2",
-      "Pengutos #3",
-      "Pengutos #4",
-      "Pengutos #5",
-      "Pengutos #6",
-      "Pengutos #7",
-      "Pengutos #8",
-      "Pengutos #9",
-      "Pengutos #10"
-    ];
-
-    const prices = [
-      1, 1, 4, 4, 20, 25, 30, 35, 50, 1000
-    ];
-
-    const container = document.getElementById("nftContainer");
-
-    let aptosWallet = undefined;
-    let userWallet = null;
-
-    if (window.aptos) aptosWallet = window.aptos;
-
-    document.getElementById("connectBtn").onclick = async () => {
-      if (!userWallet) {
-        try {
-          const response = await aptosWallet.connect();
-          userWallet = response.address;
-          document.getElementById("walletAddress").innerText = userWallet.slice(0, 6) + "..." + userWallet.slice(-4);
-          document.getElementById("connectBtn").innerText = "Disconnect Wallet";
-        } catch (err) {
-          console.error("Wallet connect failed", err);
-        }
-      } else {
-        await aptosWallet.disconnect();
-        userWallet = null;
-        document.getElementById("walletAddress").innerText = "";
-        document.getElementById("connectBtn").innerText = "Connect Wallet";
-      }
-    };
-
-    const renderNFTs = () => {
-      for (let i = 0; i < names.length; i++) {
+    async function displayNFTs() {
+      nftList.innerHTML = "";
+      images.forEach((nft, index) => {
         const card = document.createElement("div");
-        card.className = "nft-card";
+        card.className = "nft";
         card.innerHTML = `
-          <img src="${images[i]}" alt="Pengutos NFT" />
-          <h3>${names[i]}</h3>
-          <p>${prices[i]} APT</p>
-          <button class="button" onclick="buyNFT(${prices[i]})">Buy</button>
+          <img src="${nft.img}" alt="${nft.name}" />
+          <h3>${nft.name}</h3>
+          <p>Price: ${nft.price} APT</p>
+          <button onclick="buyNFT(${index})">Buy</button>
         `;
-        container.appendChild(card);
-      }
-    };
+        nftList.appendChild(card);
+      });
+    }
 
-    window.buyNFT = async (price) => {
-      if (!userWallet) {
-        alert("Connect your wallet first");
-        return;
-      }
+    window.buyNFT = async (index) => {
+      if (!currentAccount) return alert("Please connect wallet first.");
+      const receiver = "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141";
+      const amount = images[index].price * 100000000; // APT to Octas
+
       try {
         const payload = {
           type: "entry_function_payload",
-          function: "0x1::coin::transfer",
-          type_arguments: ["0x1::aptos_coin::AptosCoin"],
-          arguments: [
-            "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
-            (price * 100000000).toString()
-          ]
+          function: "0x1::aptos_account::transfer",
+          type_arguments: [],
+          arguments: [receiver, amount.toString()],
         };
-        const tx = await aptosWallet.signAndSubmitTransaction(payload);
-        alert("Transaction sent! Hash: " + tx.hash);
+        const tx = await wallet.signAndSubmitTransaction(payload);
+        alert(`Transaction submitted! Tx Hash: ${tx.hash}`);
       } catch (err) {
-        console.error("Buy failed", err);
-        alert("Transaction failed");
+        alert("Transaction failed: " + err.message);
       }
-    }
+    };
 
-    renderNFTs();
-  </script></body>
+    connectBtn.onclick = async () => {
+      try {
+        await wallet.connect();
+        const account = await wallet.account();
+        currentAccount = account.address;
+        walletAddressP.innerText = "Connected: " + currentAccount;
+        connectBtn.style.display = "none";
+        disconnectBtn.style.display = "inline";
+      } catch (e) {
+        alert("Failed to connect wallet.");
+      }
+    };
+
+    disconnectBtn.onclick = async () => {
+      await wallet.disconnect();
+      walletAddressP.innerText = "";
+      connectBtn.style.display = "inline";
+      disconnectBtn.style.display = "none";
+      currentAccount = null;
+    };
+
+    displayNFTs();
+  </script>
+</body>
 </html>
