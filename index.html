@@ -19,19 +19,6 @@
       color: #fff;
     }
 
-    .dark-mode-btn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 8px;
-      background: #222;
-      color: #fff;
-      cursor: pointer;
-      z-index: 1000;
-    }
-
     .loader {
       display: inline-block;
       width: 12px;
@@ -82,6 +69,7 @@
       border-radius: 10px;
       display: none;
       flex-direction: column;
+      z-index: 999;
     }
 
     #menu button {
@@ -164,8 +152,6 @@
   </style>
 </head>
 <body>
-  <!-- 🌙 Dark Mode Toggle Button -->
-  <button onclick="toggleDarkMode()" class="dark-mode-btn">🌙 Dark Mode</button>
 
   <header>
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
@@ -182,6 +168,7 @@
     <button onclick="openSection('settingsPopup')">Settings</button>
     <button onclick="openSection('myNfts')">My NFTs</button>
     <button onclick="window.open('https://x.com/Pengutos?t=KmQItIe5oe9x50zXEfxLpg&s=09','_blank')">Social Handle</button>
+    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </div>
 
   <div id="settingsPopup" class="popup hidden">
