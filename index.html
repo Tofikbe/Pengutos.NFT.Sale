@@ -1,186 +1,124 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      color: #333;
-    }header {
-  background: #1a1a1a;
-  color: white;
-  padding: 1rem;
-  text-align: center;
-}
-
-.wallet-section {
-  text-align: center;
-  margin: 1rem;
-}
-
-#connectBtn {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-#walletAddress {
-  display: block;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #666;
-}
-
-#nftContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.nft-card {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  padding: 10px;
-  text-align: center;
-}
-
-.nft-card img {
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-.nft-card h3 {
-  margin: 10px 0 5px;
-}
-
-.nft-card p {
-  font-size: 14px;
-  color: #444;
-}
-
-.btn {
-  background: #1a73e8;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.btn:hover {
-  background: #155ab6;
-}
-
+      background-color: #0d1117;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .nft-card {
+      background-color: #161b22;
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .nft-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
-  <script type="module">
-    import { WalletSelector } from "https://cdn.jsdelivr.net/npm/@aptos-labs/wallet-adapter-ant-design@1.3.6/dist/index.min.js";
-    import { AptosWalletAdapterProvider } from "https://cdn.jsdelivr.net/npm/@aptos-labs/wallet-adapter-core@1.3.6/dist/index.min.js";
-  </script>
 </head>
 <body>
+
   <header>
-    <h1>🐧 Pengutos NFT Store</h1>
-  </header>  <div class="wallet-section">
-    <button id="connectBtn">Connect Wallet</button>
-    <span id="walletAddress"></span>
-  </div>  <div id="nftContainer"></div>  <script>
-    const imageURLs = [
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423126/dxbaofixbvpcxfvhe9wl.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423384/vhczxko3ghfm0iicgdmv.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423192/qxtvetem8vk9duqcz1f8.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423214/p7dkujce1xdtszarwy7i.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423232/tcihdskecj4hr5gvvhtb.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423252/dv3w1swwuyzhxiwgb7br.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423271/hpwrpqy9ecg1hzkdqapf.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423294/w7tvkbdbqujw0fhobdb3.jpg",
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423314/lks1suqvhmrguybnufwa.jpg"
-    ];
+    <h2>🐧 Pengutos NFT Store</h2>
+    <div>
+      <button id="connectBtn">Connect Wallet</button>
+      <span id="walletAddress"></span>
+    </div>
+  </header>
 
+  <div class="nft-grid" id="nftGrid"></div>
+
+  <script>
+    const images = [
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423126/dxbaofixbvpcxfvhe9wl.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423384/vhczxko3ghfm0iicgdmv.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423192/qxtvetem8vk9duqcz1f8.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423214/p7dkujce1xdtszarwy7i.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423232/tcihdskecj4hr5gvvhtb.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423252/dv3w1swwuyzhxiwgb7br.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423271/hpwrpqy9ecg1hzkdqapf.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423294/w7tvkbdbqujw0fhobdb3.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423314/lks1suqvhmrguybnufwa.jpg"
+    ];
     const names = [
-      "Pengutos #1 Frost Rookie",
-      "Pengutos #2 Ice Hopper",
-      "Pengutos #3 Snow Scout",
-      "Pengutos #4 Chill Walker",
-      "Pengutos #5 Ice Phantom",
-      "Pengutos #6 Arctic Raider",
-      "Pengutos #7 Frost Commander",
-      "Pengutos #8 Snow King",
-      "Pengutos #9 Ice God",
-      "Pengutos #10 Emperor of Cold"
+      "Pengutos #1 Frost Rookie", "Pengutos #2 Ice Hopper",
+      "Pengutos #3 Snow Scout", "Pengutos #4 Chill Walker",
+      "Pengutos #5 Ice Phantom", "Pengutos #6 Arctic Raider",
+      "Pengutos #7 Frost Commander", "Pengutos #8 Snow King",
+      "Pengutos #9 Ice God", "Pengutos #10 Emperor of Cold"
     ];
+    const prices = [0.2, 1, 2, 4, 10, 15, 30, 35, 50, 1000];
 
-    const prices = [1, 1, 4, 4, 20, 20, 30, 35, 50, 1000];
+    const nftGrid = document.getElementById("nftGrid");
 
-    const container = document.getElementById("nftContainer");
-    const connectBtn = document.getElementById("connectBtn");
-    const walletAddrSpan = document.getElementById("walletAddress");
-
-    let aptosWallet = null;
-    let currentAddress = null;
-
-    async function initWallet() {
-      if (window.aptos) {
-        aptosWallet = window.aptos;
-      } else {
-        alert("No wallet found. Please install Petra or any Aptos compatible wallet like Martian, Rise, OKX, or Bitget.");
-      }
+    for (let i = 0; i < images.length; i++) {
+      const card = document.createElement("div");
+      card.className = "nft-card";
+      card.innerHTML = `
+        <img src="${images[i]}" alt="${names[i]}" />
+        <h3>${names[i]}</h3>
+        <p><b>${prices[i]} APT</b></p>
+        <button onclick="buyNFT(${prices[i]}, '${names[i]}')">Buy Now</button>
+      `;
+      nftGrid.appendChild(card);
     }
 
-    connectBtn.onclick = async () => {
-      if (!aptosWallet) return;
+    const connectBtn = document.getElementById("connectBtn");
+    const walletSpan = document.getElementById("walletAddress");
+    let userAddress = null;
 
+    connectBtn.onclick = async () => {
+      if (!window.aptos) {
+        alert("Petra Wallet not found!");
+        return;
+      }
       try {
-        if (!currentAddress) {
-          const res = await aptosWallet.connect();
-          currentAddress = res.address;
-          walletAddrSpan.innerText = currentAddress.slice(0, 6) + "..." + currentAddress.slice(-4);
-          connectBtn.innerText = "Disconnect Wallet";
-        } else {
-          await aptosWallet.disconnect();
-          currentAddress = null;
-          walletAddrSpan.innerText = "";
-          connectBtn.innerText = "Connect Wallet";
-        }
-      } catch (e) {
-        console.error(e);
-        alert("Wallet connect failed");
+        const res = await window.aptos.connect();
+        userAddress = res.address;
+        walletSpan.textContent = "🧠 " + userAddress.slice(0, 6) + "..." + userAddress.slice(-4);
+        connectBtn.textContent = "Disconnect";
+      } catch (err) {
+        alert("Connection failed");
       }
     };
 
-    function renderAll() {
-      container.innerHTML = "";
-      for (let i = 0; i < imageURLs.length; i++) {
-        const card = document.createElement("div");
-        card.className = "nft-card";
-        card.innerHTML = `
-          <img src="${imageURLs[i]}" alt="${names[i]}" />
-          <h3>${names[i]}</h3>
-          <p><b>${prices[i]} APT</b></p>
-          <button class="btn" onclick="buyNFT(${prices[i]}, '${names[i]}')">Buy Now</button>
-        `;
-        container.appendChild(card);
-      }
-    }
-
-    window.buyNFT = async (price, name) => {
-      if (!currentAddress) {
-        alert("Please connect wallet first");
+    async function buyNFT(price, name) {
+      if (!userAddress) {
+        alert("Connect your Petra Wallet first");
         return;
       }
 
       try {
-        const tx = await aptosWallet.signAndSubmitTransaction({
+        const payload = {
           type: "entry_function_payload",
           function: "0x1::coin::transfer",
           type_arguments: ["0x1::aptos_coin::AptosCoin"],
@@ -188,19 +126,15 @@
             "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
             (price * 1e8).toString()
           ]
-        });
-
-        alert(`✅ Payment Sent!\nTx Hash: ${tx.hash}`);
-
-        // TODO: Call your backend or smart contract to trigger on-chain NFT transfer
-
-      } catch (e) {
-        console.error(e);
-        alert("❌ Transaction Failed");
+        };
+        const tx = await window.aptos.signAndSubmitTransaction(payload);
+        alert(`✅ Bought "${name}" successfully!\nTx Hash: ${tx.hash}`);
+        // TODO: Trigger on-chain NFT transfer if needed
+      } catch (err) {
+        console.error(err);
+        alert("❌ Transaction failed.");
       }
-    };
-
-    initWallet();
-    renderAll();
-  </script></body>
+    }
+  </script>
+</body>
 </html>
