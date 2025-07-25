@@ -5,18 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      color: #333;
-      margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
-    }
+    <body>
+  <!-- 🌙 Dark Mode Toggle Button -->
+  <button onclick="toggleDarkMode()" class="dark-mode-btn">🌙 Dark Mode</button>
+    {
+      body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
 
-    .dark-mode {
-      background: #000;
-      color: #fff;
+.dark-mode {
+  background: #000;
+  color: #fff;
+}
+
+.dark-mode-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1000;
+}
     }
     .loader {
   display: inline-block;
@@ -204,8 +222,6 @@
 
     let userAddress = null;
     let owned = [];
-
-// ✅ Paste this just below ↑↑↑
 function showToast(message) {
   const toast = document.createElement('div');
   toast.textContent = message;
@@ -281,8 +297,11 @@ function showToast(message) {
     <button onclick="buyNFT(${i}, event)">Buy Now</button>
   `;
   nftGrid.appendChild(card);
+      
+<script>
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
 }
-
     async function buyNFT(index, event) {
   if (!userAddress) {
     alert("Connect wallet first");
@@ -291,8 +310,6 @@ function showToast(message) {
 
   const price = prices[index];
   const name = names[index];
-
-  // 👇 Button loading start
   const buyBtn = event.target;
   buyBtn.textContent = "Processing...";
   buyBtn.disabled = true;
@@ -315,7 +332,6 @@ function showToast(message) {
     alert("Transaction failed.");
   }
 
-  // 👇 Button reset after transaction (success or fail)
   buyBtn.textContent = "Buy Now";
   buyBtn.disabled = false;
     }
