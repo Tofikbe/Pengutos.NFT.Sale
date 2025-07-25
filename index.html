@@ -1,29 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pengutos NFT Store</title>
   <script type="module" src="https://unpkg.com/aptos@1.4.2/dist/index.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    .wallet { margin-bottom: 20px; }
-    .nft-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-    .nft-card { background: white; border-radius: 10px; padding: 15px; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .nft-card img { max-width: 100%; border-radius: 5px; }
-    .btn { margin-top: 10px; padding: 10px 16px; background: #5e60ce; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .btn:hover { background: #3f42b4; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0f0f, #007b8a);
+      color: #ffffff;
+      transition: background 0.3s, color 0.3s;
+    }
+    .light-mode {
+      background: #f9f9f9;
+      color: #000000;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .wallet {
+      margin: 20px;
+    }
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .nft-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .nft-card img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .btn {
+      margin-top: 10px;
+      padding: 10px 16px;
+      background: #5e60ce;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #3f42b4;
+    }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
   <div class="wallet">
     <button class="btn" id="connectBtn">Connect Wallet</button>
     <span id="walletAddress"></span>
   </div>
-
-  <div class="nft-grid" id="nftContainer"></div>
-
-  <script>
+  <div class="nft-grid" id="nftContainer"></div>  <script>
     const imageURLs = [
       "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423126/dxbaofixbvpcxfvhe9wl.jpg",
       "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
@@ -57,20 +102,21 @@
     let currentAddress = null;
 
     document.getElementById("connectBtn").onclick = async () => {
-      if (!currentAddress) {
-        try {
+      try {
+        if (!currentAddress) {
           const res = await aptosWallet.connect();
           currentAddress = res.address;
           document.getElementById("walletAddress").innerText = currentAddress.slice(0,6) + "..." + currentAddress.slice(-4);
           document.getElementById("connectBtn").innerText = "Disconnect Wallet";
-        } catch(e) {
-          alert("Connection failed");
+        } else {
+          await aptosWallet.disconnect();
+          currentAddress = null;
+          document.getElementById("walletAddress").innerText = "";
+          document.getElementById("connectBtn").innerText = "Connect Wallet";
         }
-      } else {
-        await aptosWallet.disconnect();
-        currentAddress = null;
-        document.getElementById("walletAddress").innerText = "";
-        document.getElementById("connectBtn").innerText = "Connect Wallet";
+      } catch(e) {
+        console.error(e);
+        alert("Wallet connect error");
       }
     };
 
@@ -83,16 +129,14 @@
           <img src="${imageURLs[i]}" alt="${names[i]}" />
           <h3>${names[i]}</h3>
           <p><b>${prices[i]} APT</b></p>
-          <button class="btn" onclick="buyNFT(${prices[i]})">Buy Now</button>
+          <button class="btn" onclick="buyNFT(${prices[i]}, '${names[i]}')">Buy Now</button>
         `;
         container.appendChild(card);
       }
     }
 
-    window.buyNFT = async (price) => {
-      if (!currentAddress) {
-        return alert("First connect wallet");
-      }
+    window.buyNFT = async (price, name) => {
+      if (!currentAddress) return alert("First connect wallet");
       try {
         const payload = {
           type: "entry_function_payload",
@@ -104,14 +148,17 @@
           ]
         };
         const tx = await aptosWallet.signAndSubmitTransaction(payload);
-        alert("Sent! TxHash: " + tx.hash);
+        alert(`Payment Sent!\nTxHash: ${tx.hash}\nNFT '${name}' will be transferred shortly.`);
       } catch(e) {
         console.error(e);
-        alert("Transaction error");
+        alert("Transaction failed");
       }
     };
 
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+    }
+
     renderAll();
-  </script>
-</body>
+  </script></body>
 </html>
