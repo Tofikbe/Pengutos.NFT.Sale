@@ -10,50 +10,72 @@
       background: #f2f2f2;
       color: #333;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
     }
+
+    .dark-mode {
+      background: #000;
+      color: #fff;
+    }
+
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      padding: 10px 20px;
+      background: #fff;
     }
+
+    .dark-mode header {
+      background: #111;
+    }
+
     header h2 {
       margin: 0;
     }
-    .menu-button {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: transparent;
-      border: none;
+
+    .menu-btn {
       font-size: 24px;
       cursor: pointer;
-      z-index: 1000;
+      border: none;
+      background: none;
+      color: inherit;
     }
-    .dropdown {
-      position: fixed;
+
+    #menu {
+      position: absolute;
       top: 60px;
-      left: 20px;
-      background: rgba(0, 255, 255, 0.3);
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(10px);
+      padding: 12px;
       border-radius: 10px;
-      padding: 10px;
       display: none;
       flex-direction: column;
-      z-index: 999;
     }
-    .dropdown a {
+
+    #menu button {
+      background: none;
+      border: none;
       color: white;
-      text-decoration: none;
-      margin: 8px 0;
-      font-weight: bold;
+      margin: 5px 0;
+      cursor: pointer;
+      text-align: left;
     }
+
+    .header-img {
+      width: 100%;
+      height: auto;
+    }
+
     .nft-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 16px;
+      padding: 20px;
     }
+
     .nft-card {
       background: white;
       border-radius: 10px;
@@ -61,10 +83,17 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       text-align: center;
     }
+
+    .dark-mode .nft-card {
+      background: #222;
+      color: white;
+    }
+
     .nft-card img {
       width: 100%;
       border-radius: 8px;
     }
+
     button {
       padding: 8px 12px;
       background: #1a73e8;
@@ -74,32 +103,40 @@
       cursor: pointer;
       margin-top: 8px;
     }
+
     button:hover {
       background: #155ab6;
     }
-    #connectBtn { background: #4CAF50; }
-    span#walletAddress {
+
+    #connectBtn {
+      background: #4CAF50;
+    }
+
+    #walletAddress {
       margin-left: 8px;
       font-size: 14px;
       color: #555;
     }
-    #myNFTSection {
-      margin-top: 30px;
+
+    .popup {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    .popup input {
+      margin: 5px 0;
+      padding: 6px;
+      width: 100%;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-
-  <!-- Menu -->
-  <button class="menu-button" onclick="toggleMenu()">☰</button>
-  <div class="dropdown" id="menuDropdown">
-    <a href="#" onclick="openSettings()">⚙️ Settings</a>
-    <a href="#" onclick="showMyNFTs()">📦 My NFTs</a>
-    <a href="https://x.com/Pengutos?t=KmQItIe5oe9x50zXEfxLpg&s=09" target="_blank">🐦 Social (X)</a>
-  </div>
-
-  <!-- Header -->
   <header>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <h2>🐧 Pengutos NFT Store</h2>
     <div>
       <button id="connectBtn">Connect Wallet</button>
@@ -107,14 +144,26 @@
     </div>
   </header>
 
-  <!-- NFT Display -->
-  <div id="nftGrid" class="nft-grid"></div>
+  <img src="https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436147/m6l2oeggoxzi0aj5a4qf.jpg" class="header-img" alt="Pengutos Banner"/>
 
-  <!-- My NFTs -->
-  <div id="myNFTSection">
-    <h3>🎉 My NFTs</h3>
-    <div id="myNFTGrid" class="nft-grid"></div>
+  <div id="menu">
+    <button onclick="openSection('settingsPopup')">Settings</button>
+    <button onclick="openSection('myNfts')">My NFTs</button>
+    <button onclick="window.open('https://x.com/Pengutos?t=KmQItIe5oe9x50zXEfxLpg&s=09','_blank')">Social Handle</button>
   </div>
+
+  <div id="settingsPopup" class="popup hidden">
+    <input type="email" placeholder="Enter Email" /><br/>
+    <input type="text" placeholder="Paste Wallet Address" /><br/>
+    <button onclick="toggleTheme()">Toggle Theme (Dark/Light)</button>
+  </div>
+
+  <div id="myNfts" class="popup hidden">
+    <h3>Your Purchased NFTs</h3>
+    <div id="ownedNfts"></div>
+  </div>
+
+  <div id="nftGrid" class="nft-grid"></div>
 
   <script>
     const images = [
@@ -138,53 +187,31 @@
     ];
     const prices = [1, 1, 4, 4, 20, 20, 30, 35, 50, 1000];
 
+    let userAddress = null;
+    let owned = [];
+
     const nftGrid = document.getElementById("nftGrid");
-    const myNFTGrid = document.getElementById("myNFTGrid");
     const connectBtn = document.getElementById("connectBtn");
     const walletSpan = document.getElementById("walletAddress");
-    let userAddress = null;
-    let myNFTs = [];
+    const ownedNfts = document.getElementById("ownedNfts");
 
     function toggleMenu() {
-      const menu = document.getElementById("menuDropdown");
+      const menu = document.getElementById("menu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
-    function openSettings() {
-      const email = prompt("Enter your email:");
-      const wallet = prompt("Paste your wallet address:");
-      const theme = confirm("Do you want to enable dark theme?");
-      if (theme) {
-        document.body.style.background = "#111";
-        document.body.style.color = "#eee";
-      } else {
-        document.body.style.background = "#f2f2f2";
-        document.body.style.color = "#333";
-      }
-      alert(`✅ Email: ${email}\nWallet: ${wallet}\nTheme set.`);
+    function openSection(id) {
+      document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
     }
 
-    function showMyNFTs() {
-      myNFTGrid.innerHTML = "";
-      if (myNFTs.length === 0) {
-        myNFTGrid.innerHTML = "<p>No NFTs owned yet.</p>";
-        return;
-      }
-      for (let nft of myNFTs) {
-        const card = document.createElement("div");
-        card.className = "nft-card";
-        card.innerHTML = `
-          <img src="${nft.img}" />
-          <h3>${nft.name}</h3>
-          <p>✅ Owned</p>
-        `;
-        myNFTGrid.appendChild(card);
-      }
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
     }
 
     connectBtn.onclick = async () => {
       if (!window.aptos) {
-        alert("Petra Wallet not found.");
+        alert("Petra Wallet not found. Use Petra browser.");
         return;
       }
       try {
@@ -204,7 +231,7 @@
         }
       } catch (err) {
         console.error(err);
-        alert("Wallet connection error");
+        alert("Wallet connect/disconnect failed");
       }
     };
 
@@ -215,16 +242,18 @@
         <img src="${images[i]}" alt="${names[i]}" />
         <h3>${names[i]}</h3>
         <p><b>${prices[i]} APT</b></p>
-        <button onclick="buyNFT(${prices[i]}, '${names[i]}', '${images[i]}')">Buy Now</button>
+        <button onclick="buyNFT(${i})">Buy Now</button>
       `;
       nftGrid.appendChild(card);
     }
 
-    async function buyNFT(price, name, img) {
+    async function buyNFT(index) {
       if (!userAddress) {
         alert("Connect wallet first");
         return;
       }
+      const price = prices[index];
+      const name = names[index];
       try {
         const tx = await window.aptos.signAndSubmitTransaction({
           type: "entry_function_payload",
@@ -236,12 +265,25 @@
           ]
         });
         alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
-        myNFTs.push({ name, img });
-        showMyNFTs();
+        owned.push({ img: images[index], name });
+        showOwned();
       } catch (err) {
         console.error(err);
-        alert("Transaction failed");
+        alert("Transaction failed.");
       }
+    }
+
+    function showOwned() {
+      ownedNfts.innerHTML = '';
+      if (owned.length === 0) {
+        ownedNfts.innerHTML = '<p>No NFTs yet.</p>';
+        return;
+      }
+      owned.forEach(nft => {
+        const el = document.createElement('div');
+        el.innerHTML = `<img src="${nft.img}" style="width:100px"/><p>${nft.name}</p>`;
+        ownedNfts.appendChild(el);
+      });
     }
   </script>
 </body>
