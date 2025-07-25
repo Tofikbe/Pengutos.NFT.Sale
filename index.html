@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pengutos NFT Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial; background: #0d0d0d; color: white; text-align: center; padding: 20px; }
+    .nft { border: 1px solid #444; margin: 15px; padding: 10px; border-radius: 12px; background: #1a1a1a; }
+    img { width: 100%; max-width: 300px; border-radius: 10px; }
+    button { padding: 10px 20px; background: #06f; color: white; border: none; border-radius: 8px; margin-top: 10px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>🧊 Pengutos NFT Store</h1>
+  <p>Connect wallet & buy directly on Aptos chain</p>
+
+  <div class="nft">
+    <img src="https://path-to-your-image-1" alt="Penguto 1">
+    <p>Price: 1 APT</p>
+    <button onclick="buyNFT('Penguto 1', 1)">Buy</button>
+  </div>
+
+  <div class="nft">
+    <img src="https://path-to-your-image-2" alt="Penguto 2">
+    <p>Price: 1 APT</p>
+    <button onclick="buyNFT('Penguto 2', 1)">Buy</button>
+  </div>
+
+  <div class="nft">
+    <img src="https://path-to-your-image-3" alt="Penguto 3">
+    <p>Price: 4 APT</p>
+    <button onclick="buyNFT('Penguto 3', 4)">Buy</button>
+  </div>
+
+  <!-- Add more NFT blocks below this like above -->
+
+  <script>
+    function buyNFT(name, amount) {
+      alert(`To buy ${name}, send ${amount} APT to:\n\n0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141`);
+    }
+  </script>
+</body>
+</html>
