@@ -285,6 +285,16 @@
         ownedNfts.appendChild(el);
       });
     }
+    document.addEventListener('click', (e) => {
+  if (
+    !e.target.closest('.popup') &&
+    !e.target.closest('.menu-btn') &&
+    !e.target.closest('#menu')
+  ) {
+    document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+    document.getElementById("menu").style.display = "none";
+  }
+});
   </script>
 </body>
 </html>
