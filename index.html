@@ -1,308 +1,326 @@
-<!DOCTYPE html>  <html lang="en">    <head>        <meta charset="UTF-8" />      
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>      
-  <title>Pengutos NFT Store</title>      
-  <style>      
-    body {      
-      font-family: Arial, sans-serif;      
-      margin: 0;      
-      padding: 0;      
-      color: #333;      
-      transition: background 0.3s, color 0.3s;      
-      background: url('https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753443161/udmd3hoyplmrpjmgcuxw.jpg') no-repeat center center fixed;      
-      background-size: cover;      
-      backdrop-filter: brightness(1);      
-    }  .dark-mode {      
-  color: #fff;      
-  backdrop-filter: brightness(0.4);      
-}    .dark-mode header {  
-background: #111;  
-}  .dark-mode .nft-card {
-background: #222;
-color: white;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengutos NFT Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+      background: url('https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753443161/udmd3hoyplmrpjmgcuxw.jpg') no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: brightness(1);
+    }
+    .dark-mode {
+      color: #fff;
+      backdrop-filter: brightness(0.4);
+    }
+    .dark-mode header {
+      background: #111;
+    }
+    .dark-mode .nft-card {
+      background: #222;
+      color: white;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #fff;
+    }
+    header h2 {
+      margin: 0;
+    }
+    .menu-btn {
+      font-size: 24px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+    #menu {
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+    }
+    #menu button {
+      background: none;
+      border: none;
+      color: white;
+      margin: 5px 0;
+      cursor: pointer;
+      text-align: left;
+    }
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+    .nft-card {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .nft-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button:hover {
+      background: #155ab6;
+    }
+    #connectBtn {
+      background: #4CAF50;
+    }
+    #walletAddress {
+      margin-left: 8px;
+      font-size: 14px;
+      color: #555;
+    }
+    .popup {
+      padding: 10px;
+      margin: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+    }
+    .dark-mode .popup {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .popup input {
+      margin: 5px 0;
+      padding: 6px;
+      width: 100%;
+    }
+    .hidden {
+      display: none;
+    }
+    .loader {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <h2>🐧 Pengutos NFT Store</h2>
+    <div>
+      <button id="connectBtn">Connect Wallet</button>
+      <span id="walletAddress"></span>
+    </div>
+  </header>
 
-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 10px 20px;
-background: #fff;
-}
+  <div id="menu">
+    <button onclick="openSection('settingsPopup')">Settings</button>
+    <button onclick="openSection('myNfts')">My NFTs</button>
+    <button onclick="window.open('https://x.com/Pengutos?t=KmQItIe5oe9x50zXEfxLpg&s=09','_blank')">Social Handle</button>
+    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  </div>
 
-header h2 {
-margin: 0;
-}
+  <div id="settingsPopup" class="popup hidden">
+    <input type="email" placeholder="Enter Email" /><br/>
+    <input type="text" placeholder="Paste Wallet Address" /><br/>
+    <button onclick="toggleDarkMode()">Toggle Theme (Dark/Light)</button>
+  </div>
 
-.menu-btn {
-font-size: 24px;
-cursor: pointer;
-border: none;
-background: none;
-color: inherit;
-}
+  <div id="myNfts" class="popup hidden">
+    <h3>Your Purchased NFTs</h3>
+    <div id="ownedNfts"></div>
+  </div>
 
-#menu {
-position: absolute;
-top: 60px;
-left: 10px;
-background: rgba(0, 0, 0, 0.6);
-backdrop-filter: blur(10px);
-padding: 12px;
-border-radius: 10px;
-display: none;
-flex-direction: column;
-z-index: 999;
-}
+  <div id="nftGrid" class="nft-grid"></div>
 
-#menu button {
-background: none;
-border: none;
-color: white;
-margin: 5px 0;
-cursor: pointer;
-text-align: left;
-}
+  <script>
+    const images = [
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436397/j3dzbkvhzrqlsn3waqtv.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423384/vhczxko3ghfm0iicgdmv.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423192/qxtvetem8vk9duqcz1f8.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423214/p7dkujce1xdtszarwy7i.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423232/tcihdskecj4hr5gvvhtb.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423252/dv3w1swwuyzhxiwgb7br.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423271/hpwrpqy9ecg1hzkdqapf.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423294/w7tvkbdbqujw0fhobdb3.jpg",
+      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423314/lks1suqvhmrguybnufwa.jpg"
+    ];
+    const names = [
+      "Pengutos #1 Frost Rookie", "Pengutos #2 Ice Hopper",
+      "Pengutos #3 Snow Scout", "Pengutos #4 Chill Walker",
+      "Pengutos #5 Ice Phantom", "Pengutos #6 Arctic Raider",
+      "Pengutos #7 Frost Commander", "Pengutos #8 Snow King",
+      "Pengutos #9 Ice God", "Pengutos #10 Emperor of Cold"
+    ];
+    const prices = [0.01, 0.5, 1, 2, 5, 10, 23, 30, 50, 100];
 
-.nft-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-gap: 16px;
-padding: 20px;
-}
+    let userAddress = null;
+    let owned = [];
 
-.nft-card {
-background: white;
-border-radius: 10px;
-padding: 10px;
-box-shadow: 0 0 5px rgba(0,0,0,0.1);
-text-align: center;
-}
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
 
-.nft-card img {
-width: 100%;
-border-radius: 8px;
-}
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: green;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 9999;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
-button {
-padding: 8px 12px;
-background: #1a73e8;
-color: white;
-border: none;
-border-radius: 6px;
-cursor: pointer;
-margin-top: 8px;
-}
+    const nftGrid = document.getElementById("nftGrid");
+    const connectBtn = document.getElementById("connectBtn");
+    const walletSpan = document.getElementById("walletAddress");
+    const ownedNfts = document.getElementById("ownedNfts");
 
-button:hover {
-background: #155ab6;
-}
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
 
-#connectBtn {
-background: #4CAF50;
-}
+    function openSection(id) {
+      document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+    }
 
-#walletAddress {
-margin-left: 8px;
-font-size: 14px;
-color: #555;
-}
+    connectBtn.onclick = async () => {
+      if (!window.aptos) {
+        alert("Petra Wallet not found. Use Petra browser.");
+        return;
+      }
+      try {
+        if (!userAddress) {
+          const res = await window.aptos.connect();
+          userAddress = res.address;
+          walletSpan.textContent = "🧠 " + userAddress.slice(0,6) + "..." + userAddress.slice(-4);
+          connectBtn.textContent = "Disconnect";
+        } else {
+          userAddress = null;
+          walletSpan.textContent = "";
+          connectBtn.textContent = "Connect Wallet";
+          if (typeof window.aptos.disconnect === "function") {
+            await window.aptos.disconnect();
+          }
+          alert("✅ Wallet disconnected");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Wallet connect/disconnect failed");
+      }
+    };
 
-.popup {
-padding: 10px;
-margin: 10px;
-background: rgba(255, 255, 255, 0.9);
-border-radius: 8px;
-}
+    for (let i = 0; i < images.length; i++) {
+      const card = document.createElement("div");
+      card.className = "nft-card";
+      card.innerHTML = `
+        <img src="${images[i]}" alt="${names[i]}" />
+        <h3>${names[i]}</h3>
+        <p><b>${prices[i]} APT</b></p>
+        <button onclick="buyNFT(${i}, event)">Buy Now</button>
+      `;
+      nftGrid.appendChild(card);
+    }
 
-.dark-mode .popup {
-background: rgba(0, 0, 0, 0.7);
-}
+    async function buyNFT(index, event) {
+      if (!userAddress) {
+        alert("Connect wallet first");
+        return;
+      }
+      const price = prices[index];
+      const name = names[index];
+      const buyBtn = event.target;
+      buyBtn.textContent = "Processing...";
+      buyBtn.disabled = true;
 
-.popup input {
-margin: 5px 0;
-padding: 6px;
-width: 100%;
-}
+      try {
+        const tx = await window.aptos.signAndSubmitTransaction({
+          type: "entry_function_payload",
+          function: "0x1::coin::transfer",
+          type_arguments: ["0x1::aptos_coin::AptosCoin"],
+          arguments: [
+            "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
+            (price * 1e8).toString()
+          ]
+        });
+        alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
+        owned.push({ img: images[index], name });
+        showOwned();
+      } catch (err) {
+        console.error(err);
+        alert("Transaction failed.");
+      }
 
-.hidden {
-display: none;
-}
+      buyBtn.textContent = "Buy Now";
+      buyBtn.disabled = false;
+    }
 
-.loader {
-display: inline-block;
-width: 12px;
-height: 12px;
-border: 2px solid white;
-border-top: 2px solid transparent;
-border-radius: 50%;
-animation: spin 0.6s linear infinite;
-margin-right: 5px;
-vertical-align: middle;
-}
+    function showOwned() {
+      ownedNfts.innerHTML = '';
+      if (owned.length === 0) {
+        ownedNfts.innerHTML = '<p>No NFTs yet.</p>';
+        return;
+      }
+      owned.forEach(nft => {
+        const el = document.createElement('div');
+        el.innerHTML = `<img src="${nft.img}" style="width:100px"/><p>${nft.name}</p>`;
+        ownedNfts.appendChild(el);
+      });
+    }
 
-@keyframes spin {
-to { transform: rotate(360deg); }
-}
-
-  </style>      
-</head>      
-<body>    <header>      
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>      
-    <h2>🐧 Pengutos NFT Store</h2>      
-    <div>      
-      <button id="connectBtn">Connect Wallet</button>      
-      <span id="walletAddress"></span>      
-    </div>      
-  </header>    <div id="menu">      
-    <button onclick="openSection('settingsPopup')">Settings</button>      
-    <button onclick="openSection('myNfts')">My NFTs</button>      
-    <button onclick="window.open('https://x.com/Pengutos?t=KmQItIe5oe9x50zXEfxLpg&s=09','_blank')">Social Handle</button>      
-    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>      
-  </div>    <div id="settingsPopup" class="popup hidden">      
-    <input type="email" placeholder="Enter Email" /><br/>      
-    <input type="text" placeholder="Paste Wallet Address" /><br/>      
-    <button onclick="toggleDarkMode()">Toggle Theme (Dark/Light)</button>      
-  </div>    <div id="myNfts" class="popup hidden">      
-    <h3>Your Purchased NFTs</h3>      
-    <div id="ownedNfts"></div>      
-  </div>    <div id="nftGrid" class="nft-grid"></div>    <script>      
-    const images = [      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436397/j3dzbkvhzrqlsn3waqtv.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423384/vhczxko3ghfm0iicgdmv.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423192/qxtvetem8vk9duqcz1f8.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423214/p7dkujce1xdtszarwy7i.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423232/tcihdskecj4hr5gvvhtb.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423252/dv3w1swwuyzhxiwgb7br.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423271/hpwrpqy9ecg1hzkdqapf.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423294/w7tvkbdbqujw0fhobdb3.jpg",      
-      "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423314/lks1suqvhmrguybnufwa.jpg"      
-    ];      
-    const names = [      
-      "Pengutos #1 Frost Rookie", "Pengutos #2 Ice Hopper",      
-      "Pengutos #3 Snow Scout", "Pengutos #4 Chill Walker",      
-      "Pengutos #5 Ice Phantom", "Pengutos #6 Arctic Raider",      
-      "Pengutos #7 Frost Commander", "Pengutos #8 Snow King",      
-      "Pengutos #9 Ice God", "Pengutos #10 Emperor of Cold"      
-    ];      
-    const prices = [0.01, 0.5, 1, 2, 5, 10, 23, 30, 50, 100];    let userAddress = null;      
-let owned = [];      function toggleDarkMode() {
-document.body.classList.toggle('dark-mode');
-}
-
-function showToast(message) {
-const toast = document.createElement('div');
-toast.textContent = message;
-toast.style.cssText =       position: fixed;       bottom: 20px;       left: 50%;       transform: translateX(-50%);       background: green;       color: white;       padding: 10px 20px;       border-radius: 8px;       font-weight: bold;       z-index: 9999;       box-shadow: 0 2px 8px rgba(0,0,0,0.3);      ;
-document.body.appendChild(toast);
-setTimeout(() => toast.remove(), 3000);
-}
-
-const nftGrid = document.getElementById("nftGrid");
-const connectBtn = document.getElementById("connectBtn");
-const walletSpan = document.getElementById("walletAddress");
-const ownedNfts = document.getElementById("ownedNfts");
-
-function toggleMenu() {
-const menu = document.getElementById("menu");
-menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-}
-
-function openSection(id) {
-document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
-}
-
-connectBtn.onclick = async () => {
-if (!window.aptos) {
-alert("Petra Wallet not found. Use Petra browser.");
-return;
-}
-try {
-if (!userAddress) {
-const res = await window.aptos.connect();
-userAddress = res.address;
-walletSpan.textContent = "🧠 " + userAddress.slice(0,6) + "..." + userAddress.slice(-4);
-connectBtn.textContent = "Disconnect";
-} else {
-userAddress = null;
-walletSpan.textContent = "";
-connectBtn.textContent = "Connect Wallet";
-if (typeof window.aptos.disconnect === "function") {
-await window.aptos.disconnect();
-}
-alert("✅ Wallet disconnected");
-}
-} catch (err) {
-console.error(err);
-alert("Wallet connect/disconnect failed");
-}
-};
-
-for (let i = 0; i < images.length; i++) {
-const card = document.createElement("div");
-card.className = "nft-card";
-card.innerHTML =       <img src="${images[i]}" alt="${names[i]}" />       <h3>${names[i]}</h3>       <p><b>${prices[i]} APT</b></p>       <button onclick="buyNFT(${i}, event)">Buy Now</button>      ;
-nftGrid.appendChild(card);
-}
-
-async function buyNFT(index, event) {
-if (!userAddress) {
-alert("Connect wallet first");
-return;
-}
-
-const price = prices[index];
-const name = names[index];
-const buyBtn = event.target;
-buyBtn.textContent = "Processing...";
-buyBtn.disabled = true;
-
-try {
-const tx = await window.aptos.signAndSubmitTransaction({
-type: "entry_function_payload",
-function: "0x1::coin::transfer",
-type_arguments: ["0x1::aptos_coin::AptosCoin"],
-arguments: [
-"0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
-(price * 1e8).toString()
-]
-});
-alert(✅ Bought "${name}"!\nTxHash: ${tx.hash});
-owned.push({ img: images[index], name });
-showOwned();
-} catch (err) {
-console.error(err);
-alert("Transaction failed.");
-}
-
-buyBtn.textContent = "Buy Now";
-buyBtn.disabled = false;
-}
-
-function showOwned() {
-ownedNfts.innerHTML = '';
-if (owned.length === 0) {
-ownedNfts.innerHTML = '<p>No NFTs yet.</p>';
-return;
-}
-owned.forEach(nft => {
-const el = document.createElement('div');
-el.innerHTML = <img src="${nft.img}" style="width:100px"/><p>${nft.name}</p>;
-ownedNfts.appendChild(el);
-});
-}
-
-document.addEventListener('click', (e) => {
-if (
-!e.target.closest('.popup') &&
-!e.target.closest('.menu-btn') &&
-!e.target.closest('#menu')
-) {
-document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
-document.getElementById("menu").style.display = "none";
-}
-});
-
-</script> 
+    document.addEventListener('click', (e) => {
+      if (
+        !e.target.closest('.popup') &&
+        !e.target.closest('.menu-btn') &&
+        !e.target.closest('#menu')
+      ) {
+        document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+        document.getElementById("menu").style.display = "none";
+      }
+    });
+  </script>
 </body>
+</html>
