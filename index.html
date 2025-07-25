@@ -236,16 +236,16 @@
     };
 
     for (let i = 0; i < images.length; i++) {
-      const card = document.createElement("div");
-      card.className = "nft-card";
-      card.innerHTML = `
-        <img src="${images[i]}" alt="${names[i]}" />
-        <h3>${names[i]}</h3>
-        <p><b>${prices[i]} APT</b></p>
-        <button onclick="buyNFT(${i})">Buy Now</button>
-      `;
-      nftGrid.appendChild(card);
-    }
+  const card = document.createElement("div");
+  card.className = "nft-card";
+  card.innerHTML = `
+    <img src="${images[i]}" alt="${names[i]}" />
+    <h3>${names[i]}</h3>
+    <p><b>${prices[i]} APT</b></p>
+    <button onclick="buyNFT(${i}, event)">Buy Now</button>
+  `;
+  nftGrid.appendChild(card);
+}
 
     async function buyNFT(index, event) {
   if (!userAddress) {
