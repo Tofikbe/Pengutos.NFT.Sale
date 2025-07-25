@@ -5,47 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0d1117;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nft-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .nft-card {
-      background-color: #161b22;
-      padding: 10px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    .nft-card img {
-      width: 100%;
-      border-radius: 8px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; background: #f2f2f2; color: #333; margin: 0; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    header h2 { margin: 0; }
+    .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .nft-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); text-align: center; }
+    .nft-card img { width: 100%; border-radius: 8px; }
+    button { padding: 8px 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px; }
+    button:hover { background: #155ab6; }
+    #connectBtn { background: #4CAF50; }
+    span#walletAddress { margin-left: 8px; font-size: 14px; color: #555; }
   </style>
 </head>
 <body>
-
   <header>
     <h2>🐧 Pengutos NFT Store</h2>
     <div>
@@ -54,7 +26,7 @@
     </div>
   </header>
 
-  <div class="nft-grid" id="nftGrid"></div>
+  <div id="nftGrid" class="nft-grid"></div>
 
   <script>
     const images = [
@@ -76,9 +48,38 @@
       "Pengutos #7 Frost Commander", "Pengutos #8 Snow King",
       "Pengutos #9 Ice God", "Pengutos #10 Emperor of Cold"
     ];
-    const prices = [0.2, 1, 2, 4, 10, 15, 30, 35, 50, 1000];
+    const prices = [1, 1, 4, 4, 20, 20, 30, 35, 50, 1000];
 
     const nftGrid = document.getElementById("nftGrid");
+    const connectBtn = document.getElementById("connectBtn");
+    const walletSpan = document.getElementById("walletAddress");
+    let userAddress = null;
+
+    connectBtn.onclick = async () => {
+      if (!window.aptos) {
+        alert("Petra Wallet not found. Use Petra browser.");
+        return;
+      }
+      try {
+        if (!userAddress) {
+          const res = await window.aptos.connect();
+          userAddress = res.address;
+          walletSpan.textContent = "🧠 " + userAddress.slice(0,6) + "..." + userAddress.slice(-4);
+          connectBtn.textContent = "Disconnect";
+        } else {
+          userAddress = null;
+          walletSpan.textContent = "";
+          connectBtn.textContent = "Connect Wallet";
+          if (typeof window.aptos.disconnect === "function") {
+            await window.aptos.disconnect();
+          }
+          alert("✅ Wallet disconnected");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Wallet connect/disconnect failed");
+      }
+    };
 
     for (let i = 0; i < images.length; i++) {
       const card = document.createElement("div");
@@ -92,33 +93,13 @@
       nftGrid.appendChild(card);
     }
 
-    const connectBtn = document.getElementById("connectBtn");
-    const walletSpan = document.getElementById("walletAddress");
-    let userAddress = null;
-
-    connectBtn.onclick = async () => {
-      if (!window.aptos) {
-        alert("Petra Wallet not found!");
-        return;
-      }
-      try {
-        const res = await window.aptos.connect();
-        userAddress = res.address;
-        walletSpan.textContent = "🧠 " + userAddress.slice(0, 6) + "..." + userAddress.slice(-4);
-        connectBtn.textContent = "Disconnect";
-      } catch (err) {
-        alert("Connection failed");
-      }
-    };
-
     async function buyNFT(price, name) {
       if (!userAddress) {
-        alert("Connect your Petra Wallet first");
+        alert("Connect wallet first");
         return;
       }
-
       try {
-        const payload = {
+        const tx = await window.aptos.signAndSubmitTransaction({
           type: "entry_function_payload",
           function: "0x1::coin::transfer",
           type_arguments: ["0x1::aptos_coin::AptosCoin"],
@@ -126,13 +107,11 @@
             "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
             (price * 1e8).toString()
           ]
-        };
-        const tx = await window.aptos.signAndSubmitTransaction(payload);
-        alert(`✅ Bought "${name}" successfully!\nTx Hash: ${tx.hash}`);
-        // TODO: Trigger on-chain NFT transfer if needed
+        });
+        alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
       } catch (err) {
         console.error(err);
-        alert("❌ Transaction failed.");
+        alert("Transaction failed.");
       }
     }
   </script>
