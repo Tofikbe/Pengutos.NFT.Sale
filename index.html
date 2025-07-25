@@ -7,16 +7,18 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      color: #333;
       margin: 0;
       padding: 0;
+      color: #333;
       transition: background 0.3s, color 0.3s;
+      background: url('https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436147/m6l2oeggoxzi0aj5a4qf.jpg') no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: brightness(1);
     }
 
     .dark-mode {
-      background: #000;
       color: #fff;
+      backdrop-filter: brightness(0.4);
     }
 
     .dark-mode header {
@@ -26,22 +28,6 @@
     .dark-mode .nft-card {
       background: #222;
       color: white;
-    }
-
-    .loader {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 2px solid white;
-      border-top: 2px solid transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-right: 5px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
 
     header {
@@ -84,11 +70,6 @@
       margin: 5px 0;
       cursor: pointer;
       text-align: left;
-    }
-
-    .header-img {
-      width: 100%;
-      height: auto;
     }
 
     .nft-grid {
@@ -138,6 +119,12 @@
     .popup {
       padding: 10px;
       margin: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+    }
+
+    .dark-mode .popup {
+      background: rgba(0, 0, 0, 0.7);
     }
 
     .popup input {
@@ -148,6 +135,22 @@
 
     .hidden {
       display: none;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -161,8 +164,6 @@
       <span id="walletAddress"></span>
     </div>
   </header>
-
-  <img src="https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436147/m6l2oeggoxzi0aj5a4qf.jpg" class="header-img" alt="Pengutos Banner"/>
 
   <div id="menu">
     <button onclick="openSection('settingsPopup')">Settings</button>
