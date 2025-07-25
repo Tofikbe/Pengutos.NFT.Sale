@@ -5,52 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
   <style>
-    <body>
-  <!-- 🌙 Dark Mode Toggle Button -->
-  <button onclick="toggleDarkMode()" class="dark-mode-btn">🌙 Dark Mode</button>
-    {
-      body {
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  transition: background 0.3s, color 0.3s;
-}
-
-.dark-mode {
-  background: #000;
-  color: #fff;
-}
-
-.dark-mode-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
-  z-index: 1000;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
     }
-    .loader {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid white;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-right: 5px;
-  vertical-align: middle;
-}
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+    .dark-mode {
+      background: #000;
+      color: #fff;
+    }
+
+    .dark-mode-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
     header {
       display: flex;
@@ -76,17 +72,17 @@
       color: inherit;
     }
 
-#menu {
-  position: absolute;
-  top: 60px;
-  left: 10px; /* ← This is the one you're replacing */
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10px);
-  padding: 12px;
-  border-radius: 10px;
-  display: none;
-  flex-direction: column;
-}
+    #menu {
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+    }
 
     #menu button {
       background: none;
@@ -168,6 +164,9 @@
   </style>
 </head>
 <body>
+  <!-- 🌙 Dark Mode Toggle Button -->
+  <button onclick="toggleDarkMode()" class="dark-mode-btn">🌙 Dark Mode</button>
+
   <header>
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <h2>🐧 Pengutos NFT Store</h2>
@@ -222,25 +221,30 @@
 
     let userAddress = null;
     let owned = [];
-function showToast(message) {
-  const toast = document.createElement('div');
-  toast.textContent = message;
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: green;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    z-index: 9999;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: green;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 9999;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
     const nftGrid = document.getElementById("nftGrid");
     const connectBtn = document.getElementById("connectBtn");
@@ -288,52 +292,49 @@ function showToast(message) {
     };
 
     for (let i = 0; i < images.length; i++) {
-  const card = document.createElement("div");
-  card.className = "nft-card";
-  card.innerHTML = `
-    <img src="${images[i]}" alt="${names[i]}" />
-    <h3>${names[i]}</h3>
-    <p><b>${prices[i]} APT</b></p>
-    <button onclick="buyNFT(${i}, event)">Buy Now</button>
-  `;
-  nftGrid.appendChild(card);
-      
-<script>
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-}
+      const card = document.createElement("div");
+      card.className = "nft-card";
+      card.innerHTML = `
+        <img src="${images[i]}" alt="${names[i]}" />
+        <h3>${names[i]}</h3>
+        <p><b>${prices[i]} APT</b></p>
+        <button onclick="buyNFT(${i}, event)">Buy Now</button>
+      `;
+      nftGrid.appendChild(card);
+    }
+
     async function buyNFT(index, event) {
-  if (!userAddress) {
-    alert("Connect wallet first");
-    return;
-  }
+      if (!userAddress) {
+        alert("Connect wallet first");
+        return;
+      }
 
-  const price = prices[index];
-  const name = names[index];
-  const buyBtn = event.target;
-  buyBtn.textContent = "Processing...";
-  buyBtn.disabled = true;
+      const price = prices[index];
+      const name = names[index];
+      const buyBtn = event.target;
+      buyBtn.textContent = "Processing...";
+      buyBtn.disabled = true;
 
-  try {
-    const tx = await window.aptos.signAndSubmitTransaction({
-      type: "entry_function_payload",
-      function: "0x1::coin::transfer",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [
-        "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
-        (price * 1e8).toString()
-      ]
-    });
-    alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
-    owned.push({ img: images[index], name });
-    showOwned();
-  } catch (err) {
-    console.error(err);
-    alert("Transaction failed.");
-  }
+      try {
+        const tx = await window.aptos.signAndSubmitTransaction({
+          type: "entry_function_payload",
+          function: "0x1::coin::transfer",
+          type_arguments: ["0x1::aptos_coin::AptosCoin"],
+          arguments: [
+            "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
+            (price * 1e8).toString()
+          ]
+        });
+        alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
+        owned.push({ img: images[index], name });
+        showOwned();
+      } catch (err) {
+        console.error(err);
+        alert("Transaction failed.");
+      }
 
-  buyBtn.textContent = "Buy Now";
-  buyBtn.disabled = false;
+      buyBtn.textContent = "Buy Now";
+      buyBtn.disabled = false;
     }
 
     function showOwned() {
@@ -348,16 +349,17 @@ function toggleDarkMode() {
         ownedNfts.appendChild(el);
       });
     }
+
     document.addEventListener('click', (e) => {
-  if (
-    !e.target.closest('.popup') &&
-    !e.target.closest('.menu-btn') &&
-    !e.target.closest('#menu')
-  ) {
-    document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
-    document.getElementById("menu").style.display = "none";
-  }
-});
+      if (
+        !e.target.closest('.popup') &&
+        !e.target.closest('.menu-btn') &&
+        !e.target.closest('#menu')
+      ) {
+        document.querySelectorAll(".popup").forEach(p => p.classList.add("hidden"));
+        document.getElementById("menu").style.display = "none";
+      }
+    });
   </script>
 </body>
 </html>
