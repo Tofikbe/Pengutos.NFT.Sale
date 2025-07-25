@@ -1,6 +1,8 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengutos NFT Store</title>
   <script src="https://unpkg.com/aptos@1.7.2/dist/index.umd.min.js"></script>
   <style>
@@ -8,85 +10,91 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: #f0f0f0;
       color: #333;
       transition: background-color 0.3s, color 0.3s;
-    }.dark-mode {
-  background-color: #121212;
-  color: #fff;
-}
+    }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #6200ea;
-  color: white;
-}
+    .dark-mode {
+      background-color: #121212;
+      color: #fff;
+    }
 
-.nft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background-color: #1e88e5;
+      color: white;
+    }
 
-.nft-card {
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
+    .wallet-btn, .dark-mode-btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #fff;
+      color: #1e88e5;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.nft-card:hover {
-  transform: scale(1.03);
-}
+    .dark-mode .wallet-btn, .dark-mode .dark-mode-btn {
+      background-color: #333;
+      color: #fff;
+    }
 
-.nft-card img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-}
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 25px;
+    }
 
-.nft-card .info {
-  padding: 15px;
-}
+    .nft-card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s;
+    }
 
-.nft-card button {
-  padding: 10px;
-  width: 100%;
-  background-color: #6200ea;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+    .nft-card:hover {
+      transform: scale(1.03);
+    }
 
-.wallet-btn, .dark-mode-btn {
-  padding: 10px 20px;
-  border: none;
-  background-color: #fff;
-  color: #6200ea;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 5px;
-}
+    .nft-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
 
-.dark-mode .wallet-btn, .dark-mode .dark-mode-btn {
-  background-color: #333;
-  color: #fff;
-}
+    .nft-card .info {
+      padding: 15px;
+    }
 
+    .nft-card button {
+      padding: 10px;
+      width: 100%;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
   </style>
-</head><body>
+</head>
+<body>
   <div class="header">
-    <h1>🐧 Pengutos NFT Store</h1>
+    <h2>🐧 Pengutos NFT Store</h2>
     <div>
       <button class="wallet-btn" onclick="connectWallet()">🔌 Connect Wallet</button>
       <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     </div>
-  </div>  <div class="nft-grid" id="nftGrid"></div>  <script>
+  </div>
+
+  <div class="nft-grid" id="nftGrid"></div>
+
+  <script>
     const images = [
       "https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753436397/j3dzbkvhzrqlsn3waqtv.jpg",
       "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
@@ -105,83 +113,104 @@
       "Pengutos #6", "Pengutos #7", "Pengutos #8", "Pengutos #9", "Pengutos #10"
     ];
 
-    const prices = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+    const prices = [1,1,1,1,1,1,1,1,1,1];
     const nftOwner = "0xf4b765e683f399b07790cf217b188b1918c6af55";
     const collectionName = "Pengutos";
 
     let walletAddress = null;
 
     async function connectWallet() {
-      if (!window.aptos) return alert("Please install Petra Wallet");
+      if (!window.aptos) return alert("Install Petra Wallet first!");
       try {
         const response = await window.aptos.connect();
         walletAddress = response.address;
-        document.querySelector(".wallet-btn").innerText = `🔓 ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
-        alert("Wallet connected: " + walletAddress);
+        document.querySelector(".wallet-btn").innerText = `🔓 ${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}`;
+        alert("Wallet Connected: " + walletAddress);
       } catch (err) {
-        console.error("Wallet connection failed:", err);
+        console.error(err);
+        alert("Wallet connection failed.");
       }
     }
 
     function toggleDarkMode() {
       document.body.classList.toggle("dark-mode");
     }
-
     async function mint(index) {
-      if (!walletAddress) return alert("Please connect Petra wallet first.");
+      if (!walletAddress) return alert("Please connect your Petra wallet first.");
 
       const tokenName = names[index];
+      const tokenCreator = nftOwner;
+      const tokenCollection = collectionName;
 
       try {
-        // 1. Offer token from creator to user
-        await window.aptos.signAndSubmitTransaction({
+        // Step 1: Offer NFT from your wallet to buyer
+        const offerTxn = await window.aptos.signAndSubmitTransaction({
           type: "entry_function_payload",
           function: "0x3::token_transfers::offer_script",
           type_arguments: [],
           arguments: [
-            walletAddress,
-            nftOwner,
-            collectionName,
-            tokenName,
-            1
-          ]
+            walletAddress,        // receiver
+            tokenCreator,         // creator
+            tokenCollection,      // collection name
+            tokenName,            // token name
+            "1"                   // amount
+          ],
         });
 
-        // 2. Claim token to user's wallet
-        await window.aptos.signAndSubmitTransaction({
+        await waitForTxn(offerTxn.hash);
+        console.log("Offer submitted", offerTxn);
+
+        // Step 2: Claim NFT from buyer side
+        const claimTxn = await window.aptos.signAndSubmitTransaction({
           type: "entry_function_payload",
           function: "0x3::token_transfers::claim_script",
           type_arguments: [],
           arguments: [
-            nftOwner,
-            collectionName,
+            tokenCreator,
+            tokenCollection,
             tokenName
-          ]
+          ],
         });
 
-        alert(`🎉 ${tokenName} minted to your wallet!`);
-      } catch (error) {
-        console.error("Mint failed:", error);
-        alert("❌ Mint failed. Try again.");
+        await waitForTxn(claimTxn.hash);
+        console.log("Claimed NFT", claimTxn);
+
+        alert(`🎉 NFT "${tokenName}" successfully minted to your wallet!`);
+      } catch (e) {
+        console.error("Mint error:", e);
+        alert("Mint failed. Make sure you approved the transaction in wallet.");
       }
     }
 
-    function displayNFTs() {
-      const container = document.getElementById("nftGrid");
-      images.forEach((img, idx) => {
+    async function waitForTxn(txnHash) {
+      let completed = false;
+      while (!completed) {
+        const res = await fetch(`https://fullnode.mainnet.aptoslabs.com/v1/transactions/by_hash/${txnHash}`);
+        const data = await res.json();
+        if (data?.type === "user_transaction") completed = true;
+        else await new Promise(res => setTimeout(res, 1000));
+      }
+    }
+
+    function renderNFTs() {
+      const grid = document.getElementById("nftGrid");
+      for (let i = 0; i < images.length; i++) {
         const card = document.createElement("div");
         card.className = "nft-card";
         card.innerHTML = `
-          <img src="${img}" alt="NFT Image" />
+          <img src="${images[i]}" alt="${names[i]}"/>
           <div class="info">
-            <h3>${names[idx]}</h3>
-            <p>Price: ${prices[idx]} APT</p>
-            <button onclick="mint(${idx})">Mint</button>
+            <h3>${names[i]}</h3>
+            <p>Price: ${prices[i]} APT</p>
+            <button onclick="mint(${i})">Buy Now</button>
           </div>
         `;
-        container.appendChild(card);
-      });
+        grid.appendChild(card);
+      }
     }
 
-    displayNFTs();
-  </script></body></html>
+    window.addEventListener("load", renderNFTs);
+  </script>
+</body>
+</html>
+    
