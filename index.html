@@ -1,43 +1,94 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
   <title>Pengutos NFT Store</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/aptos@latest/dist/aptos.min.js"></script>
   <style>
     body { font-family: Arial; background: #0d0d0d; color: white; text-align: center; padding: 20px; }
     .nft { border: 1px solid #444; margin: 15px; padding: 10px; border-radius: 12px; background: #1a1a1a; }
     img { width: 100%; max-width: 300px; border-radius: 10px; }
-    button { padding: 10px 20px; background: #06f; color: white; border: none; border-radius: 8px; margin-top: 10px; font-size: 16px; }
+    button { padding: 10px 20px; background: #06f; color: white; border: none; border-radius: 8px; margin-top: 10px; font-size: 16px; cursor: pointer; }
+    #wallet-address { margin-top: 20px; font-size: 14px; color: #aaa; }
   </style>
 </head>
 <body>
-  <h1>🧊 Pengutos NFT Store</h1>
-  <p>Connect wallet & buy directly on Aptos chain</p>
-
-  <div class="nft">
-    <img src="https://path-to-your-image-1" alt="Penguto 1">
+  <h1>💨 Pengutos NFT Store</h1>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <div id="wallet-address"></div>  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/1.png" alt="Pengutos #1">
+    <h3>Pengutos #1 - Frost Rookie</h3>
     <p>Price: 1 APT</p>
-    <button onclick="buyNFT('Penguto 1', 1)">Buy</button>
+    <button onclick="buyNFT('Pengutos #1', 1)">Buy</button>
   </div>
-
   <div class="nft">
-    <img src="https://path-to-your-image-2" alt="Penguto 2">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/2.png" alt="Pengutos #2">
+    <h3>Pengutos #2 - Ice Hopper</h3>
     <p>Price: 1 APT</p>
-    <button onclick="buyNFT('Penguto 2', 1)">Buy</button>
+    <button onclick="buyNFT('Pengutos #2', 1)">Buy</button>
   </div>
-
   <div class="nft">
-    <img src="https://path-to-your-image-3" alt="Penguto 3">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/3.png" alt="Pengutos #3">
+    <h3>Pengutos #3 - Snow Scout</h3>
     <p>Price: 4 APT</p>
-    <button onclick="buyNFT('Penguto 3', 4)">Buy</button>
+    <button onclick="buyNFT('Pengutos #3', 4)">Buy</button>
   </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/4.png" alt="Pengutos #4">
+    <h3>Pengutos #4 - Chill Walker</h3>
+    <p>Price: 4 APT</p>
+    <button onclick="buyNFT('Pengutos #4', 4)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/5.png" alt="Pengutos #5">
+    <h3>Pengutos #5 - Ice Phantom</h3>
+    <p>Price: 20 APT</p>
+    <button onclick="buyNFT('Pengutos #5', 20)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/6.png" alt="Pengutos #6">
+    <h3>Pengutos #6 - Arctic Raider</h3>
+    <p>Price: 20 APT</p>
+    <button onclick="buyNFT('Pengutos #6', 20)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/7.png" alt="Pengutos #7">
+    <h3>Pengutos #7 - Frost Commander</h3>
+    <p>Price: 35 APT</p>
+    <button onclick="buyNFT('Pengutos #7', 35)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/8.png" alt="Pengutos #8">
+    <h3>Pengutos #8 - Snow King</h3>
+    <p>Price: 50 APT</p>
+    <button onclick="buyNFT('Pengutos #8', 50)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/9.png" alt="Pengutos #9">
+    <h3>Pengutos #9 - Ice God</h3>
+    <p>Price: 1000 APT</p>
+    <button onclick="buyNFT('Pengutos #9', 1000)">Buy</button>
+  </div>
+  <div class="nft">
+    <img src="https://raw.githubusercontent.com/PengutosNFT/images/main/10.png" alt="Pengutos #10">
+    <h3>Pengutos #10 - Emperor of Cold</h3>
+    <p>Price: 1000 APT</p>
+    <button onclick="buyNFT('Pengutos #10', 1000)">Buy</button>
+  </div>  <script>
+    async function connectWallet() {
+      if (window.aptos) {
+        try {
+          const response = await window.aptos.connect();
+          document.getElementById("wallet-address").innerText = `Connected: ${response.address}`;
+        } catch (error) {
+          alert("Wallet connection failed");
+        }
+      } else {
+        alert("Petra wallet not found. Please install it from https://petra.app");
+      }
+    }
 
-  <!-- Add more NFT blocks below this like above -->
-
-  <script>
     function buyNFT(name, amount) {
       alert(`To buy ${name}, send ${amount} APT to:\n\n0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141`);
     }
-  </script>
-</body>
+  </script></body>
 </html>
