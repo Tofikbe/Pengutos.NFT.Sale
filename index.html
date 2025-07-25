@@ -247,38 +247,42 @@
       nftGrid.appendChild(card);
     }
 
-    async function buyNFT(index) {
-      if (!userAddress) {
-        alert("Connect wallet first");
-        return;
-      }
-      const price = prices[index];
-      const name = names[index];
-      try {
-        const tx = await window.aptos.signAndSubmitTransaction({
-          type: "entry_function_payload",
-          function: "0x1::coin::transfer",
-          type_arguments: ["0x1::aptos_coin::AptosCoin"],
-          arguments: [
-            "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
-            (price * 1e8).toString()
-          ]
-        });
-        alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
-        owned.push({ img: images[index], name });
-        showOwned();
-      } catch (err) {
-        console.error(err);
-        alert("Transaction failed.");
-      }
-    }
-    const buyBtn = event.target;
-buyBtn.textContent = "Processing...";
-buyBtn.disabled = true;
+    async function buyNFT(index, event) {
+  if (!userAddress) {
+    alert("Connect wallet first");
+    return;
+  }
 
-// After transaction:
-buyBtn.textContent = "Buy Now";
-buyBtn.disabled = false;
+  const price = prices[index];
+  const name = names[index];
+
+  // 👇 Button loading start
+  const buyBtn = event.target;
+  buyBtn.textContent = "Processing...";
+  buyBtn.disabled = true;
+
+  try {
+    const tx = await window.aptos.signAndSubmitTransaction({
+      type: "entry_function_payload",
+      function: "0x1::coin::transfer",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: [
+        "0x1f7c4a0e1b11abbe639cb52cd5fcc787cffc02f6da5ab3df0035139fce20a141",
+        (price * 1e8).toString()
+      ]
+    });
+    alert(`✅ Bought "${name}"!\nTxHash: ${tx.hash}`);
+    owned.push({ img: images[index], name });
+    showOwned();
+  } catch (err) {
+    console.error(err);
+    alert("Transaction failed.");
+  }
+
+  // 👇 Button reset after transaction (success or fail)
+  buyBtn.textContent = "Buy Now";
+  buyBtn.disabled = false;
+    }
 
     function showOwned() {
       ownedNfts.innerHTML = '';
