@@ -8,44 +8,36 @@
     body { font-family: Arial, sans-serif; background: #f2f2f2; color: #333; margin: 0; padding: 20px; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; }
     header h2 { margin: 0; }
-    .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-    .nft-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); text-align: center; }
-    .nft-card img { width: 100%; border-radius: 8px; }
-    button { padding: 8px 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px; }
-    button:hover { background: #155ab6; }
-    #connectBtn { background: #4CAF50; }
-    span#walletAddress { margin-left: 8px; font-size: 14px; color: #555; }
 
-    /* 🔻 Menu Styling */
     .menu-container {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: -10px;
+      right: -10px;
       z-index: 999;
     }
+
     #menuIcon {
-      font-size: 20px;
+      font-size: 24px;
       cursor: pointer;
       padding: 6px 12px;
       background: #1a73e8;
       color: white;
       border-radius: 6px;
       user-select: none;
-      margin-top: 10px;
-      margin-right: 10px;
     }
+
     #dropdownMenu {
       position: absolute;
-      right: 10px;
-      margin-top: 50px;
+      right: 0;
+      margin-top: 8px;
       background: white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       border-radius: 8px;
       overflow: hidden;
       display: none;
       flex-direction: column;
-      min-width: 120px;
     }
+
     #dropdownMenu button {
       padding: 10px 14px;
       background: white;
@@ -54,9 +46,18 @@
       font-size: 14px;
       cursor: pointer;
     }
+
     #dropdownMenu button:hover {
       background: #f0f0f0;
     }
+
+    .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .nft-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); text-align: center; }
+    .nft-card img { width: 100%; border-radius: 8px; }
+    button { padding: 8px 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px; }
+    button:hover { background: #155ab6; }
+    #connectBtn { background: #4CAF50; }
+    span#walletAddress { margin-left: 8px; font-size: 14px; color: #555; }
   </style>
 </head>
 <body>
@@ -67,12 +68,13 @@
       <span id="walletAddress"></span>
     </div>
 
-    <!-- 🔻 Menu Icon + Dropdown -->
+    <!-- Menu in top-right corner -->
     <div class="menu-container">
       <div id="menuIcon">☰</div>
       <div id="dropdownMenu">
-        <button onclick="alert('Coming soon')">My NFTs</button>
-        <button onclick="alert('About Pengutos')">About</button>
+        <button onclick="alert('Settings clicked')">Settings</button>
+        <button onclick="alert('My NFTs clicked')">My NFTs</button>
+        <button onclick="alert('Social Handles clicked')">Social Handles</button>
       </div>
     </div>
   </header>
@@ -80,13 +82,6 @@
   <div id="nftGrid" class="nft-grid"></div>
 
   <script>
-    // 🔻 Menu Toggle Logic
-    const menuIcon = document.getElementById("menuIcon");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    menuIcon.onclick = () => {
-      dropdownMenu.style.display = dropdownMenu.style.display === "flex" ? "none" : "flex";
-    };
-
     const images = [
       "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423126/dxbaofixbvpcxfvhe9wl.jpg",
       "https://res.cloudinary.com/dtjjgiitl/image/upload/v1753423153/cch4j8fbpkb16vy3xwlq.jpg",
@@ -172,6 +167,12 @@
         alert("Transaction failed.");
       }
     }
+
+    // Toggle menu dropdown
+    document.getElementById("menuIcon").onclick = () => {
+      const dropdown = document.getElementById("dropdownMenu");
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    };
   </script>
 </body>
 </html>
